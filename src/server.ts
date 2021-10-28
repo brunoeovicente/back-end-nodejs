@@ -1,7 +1,11 @@
 import express from 'express';
-import {v4 as uuid} from 'uuid'
+import {v4 as uuid} from 'uuid';
+import cors from "cors";
 
-const app = express()
+const app = express();
+
+app.use(express.json());
+app.use(cors());
 
 // Métodos HTTP -> GET | POST | PUT | DELETE
 
@@ -28,16 +32,16 @@ app.get('/users', (request, response) => {
 })
 
 app.post('/users', (request, response) => {
-    //receber os dados do novo usuários
+    // receber os dados do novo usuários
     const { name, email } = request.body
 
-    //criar o novo usuário
+    // criar o novo usuário
     const user = { id: uuid(), name, email }
 
-    //registrar esse usuário na base de dados
+    // registrar esse usuário na base de dados
     users.push(user)
 
-    //retornar os dados do usuário criado
+    // retornar os dados do usuário criado
     return response.json(user)
 }) ;
 
@@ -46,25 +50,25 @@ app.put('/users/:id', (request, response) => {
     const { id } = request.params
     const { name, email } = request.body
 
-    //localizar o usuário na base de dados
+    // localizar o usuário na base de dados
     const userIndex = users.findIndex((user) => user.id === id)
 
-    //se o usuário não existe, retornar um erro
+    // se o usuário não existe, retornar um erro
     if (userIndex < 0) {
         return response.status(404).json({ error: 'User not found.'})
     }
 
     const user = { id, name, email }
 
-    //atualiza o usuário na base de dados
+    // atualiza o usuário na base de dados
     users[userIndex] = user 
 
-    //retorna os dados do usuário atualizado
+    // retorna os dados do usuário atualizado
     return response.json(user)
 });
 
 app.delete('/users/:id', (request, response) => {
-    //receber id do usuário
+    // receber id do usuário
     const { id } = request.params
 
     // localizar o usuário na base da dados 
@@ -75,13 +79,13 @@ app.delete('/users/:id', (request, response) => {
         return response.status(404).json({ error: 'User not found.'})
     }
 
-    //excluir usuário da base de dados
+    // excluir usuário da base de dados
     users.splice(userIndex, 1)
 
-    //retorna status de sucesso
+    // retorna status de sucesso
     return response.status(204).send()
 });
 
 app.listen('3333', () => {
-    console.log('Back-end Started!')
+    console.log('Back-end Started!\nLocalhost:3333') // \n quebra linha
 })
